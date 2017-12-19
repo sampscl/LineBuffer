@@ -4,25 +4,28 @@ defmodule LineBuffer do
   """
 
   defmodule State do
-    @doc false
+    @typedoc """
+    `%State{}`'s type
+    """
     @type t :: %__MODULE__{}
+    @doc false
     defstruct [
       splitter: "\n",
       buf: "",
     ]
   end
 
-  @spec new(String.t() | nil) :: State.t()
+  @spec new(String.t()) :: State.t()
   @doc ~S"""
   Create a new line buffer
 
-  Parameters:
+  ## Parameters
   - splitter: A string to use to split input into lines. Pass nil to use the default "\n"
 
-  Returns:
-  - `%State{}` that is the first parameter to all other module functions.
+  ## Returns
+  `%State{}` that is the first parameter to all other module functions.
 
-  ## Examples:
+  ## Examples
   ```elixir
     # Default construction
     iex> LineBuffer.new()
@@ -33,37 +36,37 @@ defmodule LineBuffer do
     %LineBuffer.State{buf: "", splitter: "\r\n"}
 ```
   """
-  def new(splitter \\ nil), do: %State{splitter: splitter || "\n"}
+  def new(splitter \\ "\n"), do: %State{splitter: splitter}
 
   @spec add_data(State.t(), String.t()) :: {State.t(), [String.t()]}
   @doc ~S"""
   Add data to a line buffer
 
-  Parameters
+  ## Parameters
   - state: An initialized `%State{}`
-  - new_data: A string of new data that may or may not contain delimiters
+  - new_data: A `String.t()` to use to split input into lines, defaults to `"\n"`
 
-  Returns: `{updated_state, [line_without_delimiter]}`
+  ## Returns
+  `{updated_state, [line_without_delimiter]}`
 
-  ## Examples:
-
+  ## Examples
   ```elixir
-    iex> lb = LineBuffer.new()
-    %LineBuffer.State{buf: "", splitter: "\n"}
-    iex> LineBuffer.add_data(lb, "foo\n")
-    {%LineBuffer.State{buf: "", splitter: "\n"}, ["foo"]}
+  iex> lb = LineBuffer.new()
+  %LineBuffer.State{buf: "", splitter: "\n"}
+  iex> LineBuffer.add_data(lb, "foo\n")
+  {%LineBuffer.State{buf: "", splitter: "\n"}, ["foo"]}
 
-    iex> lb = LineBuffer.new()
-    %LineBuffer.State{buf: "", splitter: "\n"}
-    iex> LineBuffer.add_data(lb, "foo\nbar")
-    {%LineBuffer.State{buf: "bar", splitter: "\n"}, ["foo"]}
+  iex> lb = LineBuffer.new()
+  %LineBuffer.State{buf: "", splitter: "\n"}
+  iex> LineBuffer.add_data(lb, "foo\nbar")
+  {%LineBuffer.State{buf: "bar", splitter: "\n"}, ["foo"]}
 
-    iex> lb = LineBuffer.new()
-    %LineBuffer.State{buf: "", splitter: "\n"}
-    iex> LineBuffer.add_data(lb, "foo\nbar\n")
-    {%LineBuffer.State{buf: "", splitter: "\n"}, ["foo", "bar"]}
+  iex> lb = LineBuffer.new()
+  %LineBuffer.State{buf: "", splitter: "\n"}
+  iex> LineBuffer.add_data(lb, "foo\nbar\n")
+  {%LineBuffer.State{buf: "", splitter: "\n"}, ["foo", "bar"]}
   ```
-"""
+  """
   def add_data(state, new_data) do
     working_buf = state.buf <> new_data
     #IO.puts("working_buf: #{inspect working_buf}")
@@ -83,12 +86,13 @@ defmodule LineBuffer do
   @doc ~S"""
   Get the current string being buffered.
 
-  Parameters
+  ## Parameters
   - state: An initialized `%State{}`
 
-  Returns: string
+  ## Returns
+  `String.t()`
 
-  ## Examples:
+  ## Examples
   ```elixir
     iex> lb = LineBuffer.new()
     %LineBuffer.State{buf: "", splitter: "\n"}
@@ -102,14 +106,15 @@ defmodule LineBuffer do
 
   @spec flush(State.t()) :: {State.t(), String.t()}
   @doc ~S"""
-  Flush (empty out) the buffer.
+  Flush (empty) the buffer.
 
-  Parameters
+  ## Parameters
   - state: An initialized `%State{}`
 
-  Returns: new and emptied state and the old buffered data: `{state, string}`
+  ## Returns
+  New and emptied state and the old buffered data: `{%State{}, String.t}`
 
-  ## Examples:
+  ## Examples
   ```elixir
     iex> lb = LineBuffer.new()
     %LineBuffer.State{buf: "", splitter: "\n"}
@@ -125,12 +130,13 @@ defmodule LineBuffer do
   @doc ~S"""
   Get the splitter from state
 
-  Parameters
+  ## Parameters
   - state: An initialized `%State{}`
 
-  Returns: The splitter from state (a string)
+  ## Returns
+  The splitter from state (a `String.t()`)
 
-  ## Examples:
+  ## Examples
   ```elixir
     iex> lb = LineBuffer.new()
     %LineBuffer.State{buf: "", splitter: "\n"}
@@ -142,18 +148,21 @@ defmodule LineBuffer do
 
   @spec set_splitter(State.t(), String.t()) :: {State.t(), [String.t()]}
   @doc ~S"""
-  Set the splitter. Changing the splitter may cause new lines to be returned
+  Set the splitter.
+
+  Changing the splitter may cause new lines to be returned
   that were not considered lines before. Therefore this function is roughly
   equivalent to creating a new LineBuffer and adding the old line buffer's
   data to it.
 
-  Parameters
+  ## Parameters
   - state: An initialized `%State{}`
   - splitter: A string to use as the new splitter/delimiter
 
-  Returns: `{state, [line_without_delimiter]}`
+  ## Returns
+  `{state, [line_without_delimiter]}`
 
-  ## Examples:
+  ## Examples
   ```elixir
     iex> lb = LineBuffer.new("\r\n")
     %LineBuffer.State{buf: "", splitter: "\r\n"}
