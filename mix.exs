@@ -3,7 +3,7 @@ defmodule LineBuffer.Mixfile do
 
   def project do
     [app: :line_buffer,
-     version: "0.1.1",
+     version: "1.0.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -41,8 +41,8 @@ defmodule LineBuffer.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:espec, "~> 1.2", only: [:dev, :test]},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:espec, "~> 1.8", only: [:dev, :test]},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
     ]
   end
 
