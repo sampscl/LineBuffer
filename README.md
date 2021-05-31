@@ -9,7 +9,7 @@ This package can be installed by adding `line_buffer` to your list of dependenci
 
 ```elixir
 def deps do
-  [{:line_buffer, "~> 0.1.0"}]
+  [{:line_buffer, "~> 1.0.0"}]
 end
 ```
 The docs can be found at

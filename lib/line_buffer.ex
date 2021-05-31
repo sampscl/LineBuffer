@@ -34,7 +34,7 @@ defmodule LineBuffer do
     # Specific splitter
     iex> LineBuffer.new("\r\n")
     %LineBuffer.State{buf: "", splitter: "\r\n"}
-```
+  ```
   """
   def new(splitter \\ "\n"), do: %State{splitter: splitter}
 
